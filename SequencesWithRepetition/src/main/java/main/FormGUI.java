@@ -1,16 +1,20 @@
+package main;
+
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.regex.Pattern;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 
-public class FormGUI extends JFrame{
+public class FormGUI extends JFrame {
     private JButton mainBtn=new JButton("Count");
     private JButton conBtn=new JButton("Continue");
     private JButton addBtn=new JButton("Add word");
@@ -22,28 +26,41 @@ public class FormGUI extends JFrame{
     public JTextPane txtVoc=new JTextPane();
     public JTextPane txtSeq=new JTextPane();
     private JLabel label=new JLabel();
+    private JLabel inputWrdLbl=new JLabel("Input word:");
+    private JLabel addWrdLbl=new JLabel("Input word:");
+    private JLabel vocLbl=new JLabel("Vocabulary:");
+    private JLabel resLbl=new JLabel("Suitable words:");
+    JScrollPane outputscrollVoc = new JScrollPane(txtVoc);
+    JScrollPane outputscrollSeq = new JScrollPane(txtSeq);
 
     public FormGUI(){
         super("Sequences");
-        this.setBounds(100,100,650,450);
+        this.setBounds(100,100,850,450);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        mainBtn.setBounds(48,100,95,40);
-        inputWrd.setBounds(23,70,150,25);
-        label.setBounds(23,150,150,70);
-        conBtn.setBounds(48,220,95,30);
-        txtVoc.setBounds(375,10,250,230);
+        outputscrollVoc.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        outputscrollSeq.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        mainBtn.setBounds(215,80,130,30);
+        inputWrd.setBounds(23,80,130,30);
+        inputWrdLbl.setBounds(23,60,130,15);
+        label.setBounds(215,150,150,70);
+        conBtn.setBounds(215,130,130,30);
+        outputscrollVoc.setBounds(575,35,250,165);
         txtVoc.setEditable(false);
-        txtSeq.setBounds(375,250,250,150);
+        vocLbl.setBounds(575, 10, 250, 15);
+        outputscrollSeq.setBounds(575,235,250,165);
         txtSeq.setEditable(false);
-        addBtn.setBounds(220,80,130,30);
-        addWrd.setBounds(220,130,130,30);
-        delBtn.setBounds(220,180,130,30);
-        cleanBtn.setBounds(220,230,130,30);
-        openVocBtn.setBounds(220,280,130,30);
+        resLbl.setBounds(575,210,250,15);
+        addBtn.setBounds(420,130,130,30);
+        addWrdLbl.setBounds(420,60,130,15);
+        addWrd.setBounds(420,80,130,30);
+        delBtn.setBounds(420,180,130,30);
+        cleanBtn.setBounds(420,230,130,30);
+        openVocBtn.setBounds(420,280,130,30);
 
         Container container=this.getContentPane();
-        container.setLayout(null);
+        container.setLayout(new GridLayout(6,4, 10,10));
 
         mainBtn.addActionListener(new ButtonMainEventListener());
         conBtn.addActionListener(new ButtonConEventListener());
@@ -52,28 +69,49 @@ public class FormGUI extends JFrame{
         cleanBtn.addActionListener(new ButtonCleanEventListener());
         openVocBtn.addActionListener(new ButtonOpenVocEventListener());
 
+        container.add(inputWrdLbl);
+        container.add(new JLabel());
+        container.add(addWrdLbl);
+        container.add(vocLbl);
+
+        container.add(inputWrd);
         container.add(mainBtn);
+        container.add(addWrd);
+        container.add(outputscrollVoc);
+
+        container.add(new JLabel());
         container.add(conBtn);
         container.add(addBtn);
-        container.add(delBtn);
-        container.add(cleanBtn);
-        container.add(openVocBtn);
-        container.add(inputWrd);
-        container.add(addWrd);
-        container.add(txtVoc);
-        container.add(txtSeq);
+        container.add(resLbl);
+
+        container.add(new JLabel());
         container.add(label);
+        container.add(delBtn);
+        container.add(outputscrollSeq);
+
+        container.add(new JLabel());
+        container.add(new JLabel());
+        container.add(cleanBtn);
+        container.add(new JLabel());
+
+        container.add(new JLabel());
+        container.add(new JLabel());
+        container.add(openVocBtn);
+        container.add(new JLabel());
 
     }
 
     class  ButtonOpenVocEventListener implements ActionListener {
         public void actionPerformed(ActionEvent e) { //open vocabulary from the file
             JFileChooser fileopen = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "txt", "txt");
+            fileopen.setFileFilter(filter);
             int ret = fileopen.showDialog(null, "Open file");
             if (ret == JFileChooser.APPROVE_OPTION) {
                 File file = fileopen.getSelectedFile();
                 if (!checkFile(file))
-                    JOptionPane.showMessageDialog(null, "File contains invalid characters!", "Output", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Error opening file! Only English letters are allowed! Every word must begin with a new line!", "Output", JOptionPane.PLAIN_MESSAGE);
                 else {
                     txtVoc.setText("");//clean the vocabulary field
                     try {
@@ -132,7 +170,7 @@ public class FormGUI extends JFrame{
                 ArrayList<String> seq=new ArrayList<String>();
                 MakeEnable(false);
                 //print the result
-                label.setText("Number of sequences: "+Sequences.Check(inputWrd.getText(),voc,seq));
+                label.setText("Number of sequences: "+Sequences.check(inputWrd.getText(),voc,seq));
                 for(int j=0;j<seq.size();j++) { //print result sequences
                     try {
                         Document doc = txtSeq.getDocument();
@@ -223,5 +261,10 @@ public class FormGUI extends JFrame{
         txtVoc.setEnabled(flag);
         conBtn.setVisible(!flag);
         label.setVisible(!flag);
+    }
+
+    public void FormCreate(){
+        this.setVisible(true);
+        conBtn.setVisible(false);
     }
 }
