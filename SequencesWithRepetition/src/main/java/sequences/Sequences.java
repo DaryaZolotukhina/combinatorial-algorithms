@@ -1,4 +1,4 @@
-package main;
+package sequences;
 
 
 import java.util.ArrayList;
@@ -25,23 +25,31 @@ public class Sequences {
     }
 
 
-    public static int check(String wrd,String[] voc,ArrayList<String> seq) {//main method of counting sequences
+    public static ArrayList<String> check(String wrd,String[] voc) {//main method of counting sequences
         Permutation perm=new Permutation();
-        int res = 0;
+        ArrayList<String> seq=new ArrayList<>();
         int step;
         int n = wrd.length();
         Arrays.sort(voc, Comparator.comparing(String::length));
         step=skipShort(voc, n);
         if (step == (-1))
-            return res;
+            return seq;
         for (int i = step; i < voc.length; i = step) {//main loop
             int m = voc[i].length();
             perm.initSeq(m);
             int end=cntStep(i, voc);
-            res+=perm.generate(n,m,step,end,wrd,voc,seq);
+            while (perm.next(n, m)) { //all sequence generation
+                if (perm.isCorrect(n))//if the sequence is correct
+                    for (int j = step; j < end; j++) {
+                        if (perm.toString(m, wrd).equals(voc[j])) {
+                            seq.add(voc[j]);
+                            break;
+                        }
+                    }
+            }
             step = end;
             }
-        return res;
+        return seq;
     }
 
 }

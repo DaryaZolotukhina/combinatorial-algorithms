@@ -1,4 +1,4 @@
-package main;
+package sequences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,18 +45,4 @@ public class Permutation {
         ar[m-1]=0;
     }
 
-    public int generate(int n, int m, int step, int end, String wrd,String[] voc,ArrayList<String> seq) { //sequences generation for all words of equal length
-        int res=0;
-        while (this.next(n, m)) { //all sequence generation
-            if (this.isCorrect(n))//if the sequence is correct
-                for (int i = step; i < end; i++) {
-                    if (this.toString(m, wrd).equals(voc[i])) {
-                        res++;
-                        seq.add(voc[i]);
-                        break;
-                    }
-                }
-        }
-        return res;
-    }
 }

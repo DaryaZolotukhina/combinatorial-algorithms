@@ -1,6 +1,6 @@
-package main.mainClass;
+package sequences.main.seq;
 
-import main.FormGUI;
+import sequences.FormGUI;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package main;
+package sequences;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -167,10 +167,10 @@ public class FormGUI extends JFrame {
                 JOptionPane.showMessageDialog(null, "Fill the vocabulary!", "Output", JOptionPane.PLAIN_MESSAGE);
             else {
                 String[] voc = txtVoc.getText().split("\\r\\n"); //split the vocabulary
-                ArrayList<String> seq=new ArrayList<String>();
+                ArrayList<String> seq=Sequences.check(inputWrd.getText(),voc);
                 MakeEnable(false);
                 //print the result
-                label.setText("Number of sequences: "+Sequences.check(inputWrd.getText(),voc,seq));
+                label.setText("Number of sequences: "+seq.size());
                 for(int j=0;j<seq.size();j++) { //print result sequences
                     try {
                         Document doc = txtSeq.getDocument();
