@@ -1,3 +1,5 @@
+package main.java.wave;
+
 import java.awt.*;
 import java.util.ArrayDeque;
 
@@ -8,7 +10,7 @@ public class Algorithm {
     static int[] dRow={-1,1,-2,2,-2,2,-1,1};
 
     //нахождение пути
-    public static boolean findWay(int rowbeg, int colbeg, int rowend,int colend, int[][] a)
+    public static boolean findWay( int rowend,int colend,int rowbeg, int colbeg, int[][] a)
     {
         int p,m;
 
@@ -45,16 +47,18 @@ public class Algorithm {
     }
 
     //раскраска ячейки
-    public static void light(int aCol, int aRow) throws InterruptedException {
+    public static void light(int aCol, int aRow, int step) throws InterruptedException {
         MainForm.squares[aCol][aRow].setBackground(Color.yellow);
+        MainForm.squares[aCol][aRow].setText(String.valueOf(step));
     }
 
 
     //построение пути
-    public static void buildWay(int rowbeg, int colbeg, int rowend,int colend,int[][] a) throws InterruptedException {
+    public static void buildWay(int rowend,int colend, int rowbeg, int colbeg,int[][] a) throws InterruptedException {
         int p=colend;
         int m=rowend;
-        light(p,m);
+        int step=1;
+        light(p,m,step);
         while (p!=colbeg || m!=rowbeg){
             int t=-1;
             boolean found=false;
@@ -68,11 +72,12 @@ public class Algorithm {
             }
             if (found)
             {
-                light(p+dCol[t],m+dRow[t]);
+                step++;
+                light(p+dCol[t],m+dRow[t],step);
                 p=p+dCol[t];
                 m=m+dRow[t];
             }
         }
-        light(p,m);
+        light(p,m,step);
     }
 }

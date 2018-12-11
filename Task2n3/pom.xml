@@ -30,7 +30,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>wave.main.alg.Main</mainClass>
+							<mainClass>main.java.wave.main.alg.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

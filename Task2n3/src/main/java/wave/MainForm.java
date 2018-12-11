@@ -1,7 +1,9 @@
+package main.java.wave;
+
 import javax.swing.*;
+import java.applet.Applet;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.Random;
 
 public class MainForm extends JFrame {
@@ -11,7 +13,9 @@ public class MainForm extends JFrame {
     public JPanel panel;
 
     public static int[][] a=new int[8][8];
-    static int rowbeg, colbeg, rowend, colend;
+    static int rowbeg=-1, colbeg=-1, rowend=-1, colend=-1;
+    int nxBlockSize;
+    int nyBlockSize;
 
     public MainForm() {
         super("Chessboard");
@@ -46,6 +50,62 @@ public class MainForm extends JFrame {
         container.add(panel,BorderLayout.CENTER);
         container.add(newBtn,BorderLayout.NORTH);
         container.add(calcBtn,BorderLayout.SOUTH);
+        panel.addMouseListener(new MouseEvents());
+        Dimension dm = panel.getSize();
+        nxBlockSize = dm.width / 8;
+        nyBlockSize = (dm.height-150) / 8;
+    }
+
+    public class MouseEvents extends Applet implements MouseListener {
+
+
+        public void init() {
+            addMouseListener(this);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        public void mousePressed(MouseEvent me) {
+            // сохранить координаты
+            if (me.getButton() == MouseEvent.BUTTON1) {
+                if (rowbeg!=-1)
+                    squares[colbeg][rowbeg].setText("");
+                int xClick = me.getX() / nxBlockSize;
+                int yClick = me.getY() / nyBlockSize ;
+                            rowbeg = xClick;
+                            colbeg = yClick;
+                            squares[colbeg][rowbeg].setText("Start");
+                        }
+             else {
+                if (rowend!=-1)
+                    squares[colend][rowend].setText("");
+                int xClick = me.getX() / nxBlockSize;
+                int yClick = me.getY() / nyBlockSize  ;
+                            rowend = xClick;
+                            colend = yClick;
+                            squares[colend][rowend].setText("Finish");
+                        }
+                if (rowbeg!=-1 && colbeg!=-1 && rowend!=-1 && colend!=-1)
+                    calcBtn.setEnabled(true);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
     }
 
     class ButtonNewEventListener implements ActionListener {
@@ -59,6 +119,10 @@ public class MainForm extends JFrame {
                     }
                 }
             }
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++) {
+                    squares[i][j].setText("");
+                }
             Random random = new Random();
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++) {
@@ -68,32 +132,18 @@ public class MainForm extends JFrame {
                     else
                         a[i][j] = 0;
                 }
-            for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++) {
-                    squares[i][j].setText(String.valueOf(a[i][j]));
-                }
-            InputForm inForm=new InputForm();
-            inForm.FormCreate();
         }
 
     }
 
-    public static void helper(){
-        rowbeg = InputForm.xBeg;
-        colbeg = InputForm.yBeg;
-        rowend = InputForm.xEnd;
-        colend = InputForm.yEnd;
-        a[colend][rowend] = 0;
-        squares[colend][rowend].setText("Start");
-        squares[colbeg][rowbeg].setText("Finish");
-        calcBtn.setEnabled(true);
-    }
-
     class ButtonCalcEventListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (!Algorithm.findWay(rowbeg, colbeg, rowend, colend, a))
+            if (rowbeg==rowend && colbeg==colend){
+                JOptionPane.showMessageDialog(null, "Start and finish can not match!", "Output", JOptionPane.PLAIN_MESSAGE);
+            }
+            if (!Algorithm.findWay(rowbeg, colbeg, rowend, colend, a)) {
                 JOptionPane.showMessageDialog(null, "Unable to find a way!", "Output", JOptionPane.PLAIN_MESSAGE);
-            else {
+            } else {
                 try {
                     Algorithm.buildWay(rowbeg, colbeg, rowend, colend, a);
                 } catch (InterruptedException e1) {

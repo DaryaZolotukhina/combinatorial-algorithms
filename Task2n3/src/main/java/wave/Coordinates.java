@@ -1,3 +1,5 @@
+package main.java.wave;
+
 public class Coordinates {
     int x;
     int y;
